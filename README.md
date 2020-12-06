@@ -12,6 +12,8 @@ If the numbers do match, the batter gets a hit according to the numbers that wer
 
 Other than that, the game follows the exact same structure of a baseball game: three outs per inning, nine innings per game (unless there is a tie).
 
-Of course, there is strategy involved. Players want to remain unpredictable, but make an optimal play. The pitcher will naturally want to flash 1 more than 5, but may want to flash higher numbers on occasion to maintain unpredictability. The batter may want to play 5 the most, but may find that playing lower numbers with more frequency leads to more success of matching the pitcher's number (since the pitcher will, presumably, tend to play lower numbers).
+Of course, there is strategy involved. The hitter wants to match numbers, and the pitcher wants to avoid matching numbers. If the numbers match, the hitter hopes the number if higher. The pitcher hopes it is lower.
+
+Players want to remain unpredictable, but make an optimal play. The pitcher will naturally want to flash lower numbers more often, but may want to flash higher numbers on occasion to maintain unpredictability. The batter may want to play higher numbers more frequently, but may find that playing lower numbers with more frequency leads to more success of matching the pitcher's number (since the pitcher will, presumably, tend to play lower numbers).
 
 This repo will start with a random initiation, laying the ground for future machine learning strategies. 

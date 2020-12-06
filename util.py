@@ -131,7 +131,9 @@ class Game:
         return string representation of state
         '''
 
+
         tp = 'Top' if self.top else 'Bottom'
+        tm = 'Away Team' if self.top else 'Home Team'
 
         inn = self.inning_to_string()
 
@@ -147,15 +149,18 @@ class Game:
                 runners += ' 3rd'
 
         if self.away_score > self.home_score:
-            return "{act}! Away {aw}, Home {hs} in the {tp} of the {inn}, {rnrs}".format(act=self.last_act,aw=self.away_score,hs=self.home_score,tp=tp,inn=inn,rnrs = runners)
+            res = "{act} for {tm}! Away {aw}, Home {hs} with {outs} outs in the {tp} of the {inn}, {rnrs}".format(act=self.last_act,tm=tm,aw=self.away_score,hs=self.home_score,outs=self.outs,tp=tp,inn=inn,rnrs = runners)
         else:
-            return "{act}! Home {hs}, Away {aw} in the {tp} of the {inn}, {rnrs}".format(act=self.last_act,aw=self.away_score,hs=self.home_score,tp=tp,inn=inn,rnrs = runners)
+            res = "{act} for {tm}! Home {hs}, Away {aw} with {outs} outs in the {tp} of the {inn}, {rnrs}".format(act=self.last_act,tm=tm,aw=self.away_score,hs=self.home_score,outs=self.outs,tp=tp,inn=inn,rnrs = runners)
 
-        if self.over: # if game is over, show the final score
+        if self.over: # if game is over, show the final score too
             if self.home_score > self.away_score: # home team won
-                return '\n\nGame Over! Home team wins {}-{}'.format(self.home_score,self.away_score)
+                res += '\n\nGame Over! Home team wins {}-{}'.format(self.home_score,self.away_score)
             else: # home team lost
-                return '\n\nGame Over! Away team wins {}-{}'.format(self.away_score,self.home_score)
+                res += '\n\nGame Over! Away team wins {}-{}'.format(self.away_score,self.home_score)
+
+        return res
+
 
     def play(self,pitch,bat):
         '''
@@ -181,13 +186,16 @@ class Game:
                 self.last_act = 'Grand Slam'
 
             else: # if numbers do not match
-                self.last_act = 'Out!'
+                self.last_act = 'Out'
 
                 self.outs +=1 # record an out
                 if self.outs == 3: # end the half inning
-                    self.top = False
-                    self.outs = 0
-                    self.diamond.clear()
+                    if self.inning == 9 and self.home_score > self.away_score: #edge case where home team is leading after top of 9th, and thus no need for bottom of ninth
+                        self.over = True
+                    else:
+                        self.top = False
+                        self.outs = 0
+                        self.diamond.clear()
 
         else: # if bottom of the inning
             if pitch == bat == 1:

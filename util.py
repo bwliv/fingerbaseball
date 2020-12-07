@@ -1,4 +1,5 @@
 from copy import deepcopy
+from numpy.random import choice
 
 class Diamond:
     '''
@@ -99,7 +100,7 @@ class Game:
     '''
     Tracks the state of a game
     '''
-    def __init__(self):
+    def __init__(self,home_pitch_history = None, home_bat_history= None,away_pitch_history = None,away_bat_history= None):
         '''
         begin a game
         '''
@@ -111,6 +112,11 @@ class Game:
         self.diamond = Diamond()
         self.over = False # if game is over
         self.last_act = None
+        self.play_number = 1
+        self.home_pitch_history = [] if home_pitch_history is None else home_pitch_history
+        self.home_bat_history = [] if home_bat_history is None else home_bat_history
+        self.away_pitch_history = [] if away_pitch_history is None else away_pitch_history
+        self.away_bat_history = [] if away_bat_history is None else away_bat_history
 
     def inning_to_string(self):
         '''
@@ -130,7 +136,6 @@ class Game:
         '''
         return string representation of state
         '''
-
 
         tp = 'Top' if self.top else 'Bottom'
         tm = 'Away Team' if self.top else 'Home Team'
@@ -161,6 +166,11 @@ class Game:
 
         return res
 
+    def state(self):
+        '''
+        return current state of game to inform player
+        '''
+        return self.inning,self.top,self.outs,self.home_score,self.away_score,self.diamond,self.play_number,self.home_pitch_history,self.home_bat_history,self.away_pitch_history,self.away_bat_history
 
     def play(self,pitch,bat):
         '''
@@ -168,7 +178,13 @@ class Game:
         pitch (int): number flashed by pitching team
         bat (int): number flashed by batting team
         '''
+
         if self.top: # if top of the inning
+
+            # append to actions histories
+            self.home_pitch_history.append(pitch)
+            self.away_bat_history.append(bat)
+
             if pitch == bat == 1:
                 self.away_score += self.diamond.single()
                 self.last_act = 'Single'
@@ -198,6 +214,11 @@ class Game:
                         self.diamond.clear()
 
         else: # if bottom of the inning
+
+            # append to actions histories
+            self.home_bat_history.append(bat)
+            self.away_pitch_history.append(pitch)
+
             if pitch == bat == 1:
                 self.home_score += self.diamond.single()
                 self.last_act = 'Single'
@@ -247,19 +268,5 @@ class Game:
                     else: #end the game
                         self.over = True
 
-
-
-class Player:
-    '''
-    class to store a player's decisions
-    '''
-    def __init__(self,home):
-        '''
-        creates a player instance
-        home (bool): if this is the home team
-        '''
-        self.home = home
-        self.runs = 0
-        self.outs = 0
-        self.actions_history = []
-        self.diamond = None
+        # increment the play number
+        self.play_number += 1
